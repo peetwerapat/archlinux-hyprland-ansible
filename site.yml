@@ -1,0 +1,27 @@
+---
+# =============================================================================
+# site.yml — reproduce this Arch + Hyprland (ML4W) machine on a new box.
+#
+#   ansible-playbook site.yml --ask-become-pass
+#
+# Run individual parts with tags, e.g.:
+#   ansible-playbook site.yml --ask-become-pass --tags packages
+#   ansible-playbook site.yml --ask-become-pass --tags dotfiles
+# =============================================================================
+- name: Provision Arch + Hyprland workstation
+  hosts: all
+  gather_facts: true
+
+  pre_tasks:
+    - name: Refresh pacman package databases
+      become: true
+      community.general.pacman:
+        update_cache: true
+      tags: [always]
+
+  roles:
+    - { role: packages, tags: [packages] }
+    - { role: aur,      tags: [aur] }
+    - { role: services, tags: [services] }
+    - { role: user,     tags: [user] }
+    - { role: dotfiles, tags: [dotfiles] }

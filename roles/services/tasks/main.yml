@@ -1,0 +1,25 @@
+---
+# Enable (and start) system + user services.
+
+- name: Enable system services
+  become: true
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop: "{{ system_services + system_services_optional }}"
+  register: svc_result
+  failed_when:
+    - svc_result is failed
+    - "'Could not find the requested service' not in (svc_result.msg | default(''))"
+
+- name: Enable user services (systemd --user)
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: true
+    scope: user
+  loop: "{{ user_services }}"
+  register: usvc_result
+  failed_when:
+    - usvc_result is failed
+    - "'Could not find the requested service' not in (usvc_result.msg | default(''))"

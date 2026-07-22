@@ -1,0 +1,6 @@
+# Collections needed by this playbook.
+# Install with:  ansible-galaxy collection install -r requirements.yml
+# (Not needed if you installed the full `ansible` package — it bundles these.)
+collections:
+  - name: community.general
+  - name: ansible.posix

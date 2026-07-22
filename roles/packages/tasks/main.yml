@@ -1,0 +1,7 @@
+---
+# Install all official-repo packages captured from the source machine.
+- name: Install pacman packages
+  become: true
+  community.general.pacman:
+    name: "{{ pacman_packages }}"
+    state: present

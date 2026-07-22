@@ -1,0 +1,17 @@
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[user]
+	email = peetwerapat.dev@gmail.com
+	name = peetwerapat
+[init]
+	defaultBranch = main
+[fetch]
+	prune = true
+[http]
+	postBuffer = 524288000
+	lowSpeedLimit = 0
+	lowSpeedTime = 999999

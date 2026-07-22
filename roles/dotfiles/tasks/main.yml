@@ -1,0 +1,30 @@
+---
+# Deploy the config snapshot taken from the source machine.
+# Files live under roles/dotfiles/files/{config,home}. Symlinks were
+# dereferenced at capture time, so everything here is real content.
+
+- name: Ensure ~/.config exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config"
+    state: directory
+    mode: "0755"
+
+- name: Back up an existing ~/.config before first deploy
+  ansible.builtin.command:
+    cmd: "cp -a {{ ansible_env.HOME }}/.config {{ ansible_env.HOME }}/.config.bak-ansible"
+    creates: "{{ ansible_env.HOME }}/.config.bak-ansible"
+
+- name: Deploy ~/.config/* dotfiles
+  ansible.posix.synchronize:
+    src: "files/config/"
+    dest: "{{ ansible_env.HOME }}/.config/"
+    archive: true
+    recursive: true
+  # `synchronize` runs rsync locally when ansible_connection=local.
+
+- name: Deploy home-directory dotfiles (.zshrc, .gitconfig, ...)
+  ansible.posix.synchronize:
+    src: "files/home/"
+    dest: "{{ ansible_env.HOME }}/"
+    archive: true
+    recursive: true

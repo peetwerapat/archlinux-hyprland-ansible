@@ -1,0 +1,6 @@
+# Ansible runtime cruft
+*.retry
+.vault_pass
+
+# The captured snapshot may contain personal config (e.g. home/.gitconfig
+# holds your name/email). Keep this repo PRIVATE, or scrub before publishing.

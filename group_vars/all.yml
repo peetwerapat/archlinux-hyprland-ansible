@@ -1,0 +1,195 @@
+---
+# ==============================================================
+# group_vars/all.yml  —  generated from the source machine
+# Edit freely: comment out anything you don't want on the new box.
+# ==============================================================
+
+# The login user on the target machine (dotfiles + groups apply to this user)
+target_user: "{{ ansible_user_id }}"
+
+# ---- Official-repo packages (pacman) ----------------------------
+# NOTE: intel-ucode / linux-firmware-intel / intel-media-driver are
+#       Intel-specific — swap for amd-ucode etc. on AMD hardware.
+pacman_packages:
+  - arp-scan
+  - base
+  - base-devel
+  - bind
+  - blueman
+  - brightnessctl
+  - btrfs-progs
+  - clang
+  - cliphist
+  - dmenu
+  - docker
+  - docker-compose
+  - dosfstools
+  - efibootmgr
+  - exfatprogs
+  - eza
+  - fastfetch
+  - ffmpegthumbnailer
+  - flatpak
+  - fprintd
+  - fuse2
+  - fzf
+  - gimp
+  - git
+  - github-cli
+  - gnome-calculator
+  - gnome-keyring
+  - gnome-text-editor
+  - go
+  - grim
+  - gst-plugin-pipewire
+  - gtk4
+  - gum
+  - gvfs
+  - htop
+  - hyprpicker
+  - i2c-tools
+  - imagemagick
+  - imv
+  - intel-media-driver
+  - intel-ucode
+  - jq
+  - lazydocker
+  - libadwaita
+  - libfprint
+  - libinput-tools
+  - libpulse
+  - libreoffice-fresh
+  - libva-utils
+  - linux
+  - linux-firmware-intel
+  - linux-headers
+  - linux-lts
+  - linux-lts-headers
+  - llvm
+  - loupe
+  - lua-language-server
+  - maven
+  - mpv
+  - nautilus
+  - ncdu
+  - neovim
+  - network-manager-applet
+  - networkmanager
+  - nm-connection-editor
+  - nmap
+  - nodejs
+  - noto-fonts-cjk
+  - noto-fonts-emoji
+  - noto-fonts-extra
+  - npm
+  - nwg-dock-hyprland
+  - nwg-look
+  - ollama
+  - otf-font-awesome
+  - papirus-icon-theme
+  - pavucontrol
+  - pipewire
+  - pipewire-alsa
+  - pipewire-jack
+  - pipewire-pulse
+  - pnpm
+  - postgresql
+  - power-profiles-daemon
+  - python-gobject
+  - python-pynvim
+  - qt5-graphicaleffects
+  - qt5-quickcontrols2
+  - qt5-svg
+  - qt6ct
+  - reflector
+  - rofi
+  - rpi-imager
+  - rsync
+  - rust
+  - sddm
+  - slurp
+  - sof-firmware
+  - swaync
+  - tailscale
+  - tlp
+  - tmux
+  - tree-sitter-cli
+  - ttf-dejavu
+  - ttf-fira-code
+  - ttf-fira-sans
+  - ttf-firacode-nerd
+  - tumbler
+  - unzip
+  - uwsm
+  - valkey
+  - waybar
+  - wget
+  - wireguard-tools
+  - wireplumber
+  - xclip
+  - xdg-desktop-portal-gtk
+  - zsh
+  - zsh-completions
+
+# ---- AUR packages (installed via yay) ---------------------------
+aur_packages:
+  - bambustudio-bin
+  - beekeeper-studio-bin
+  - bibata-cursor-theme-bin
+  - brave-bin
+  - checkupdates-with-aur
+  - clickup-desktop
+  - downgrade
+  - figma-linux
+  - google-chrome
+  - grimblast-git
+  - hyprshade
+  - jdtls
+  - lazysql
+  - ml4w-hyprland
+  - nautilus-open-any-terminal
+  - ngrok
+  - notion-app-electron
+  - postman-bin
+  - python-screeninfo
+  - slack-desktop
+  - snapd
+  - spring-boot-cli
+  - teamviewer
+  - terraform-bin
+  - waypaper
+  - wlogout
+  - yay
+  - zen-browser-bin
+
+# ---- System services to enable (systemd, root) ------------------
+# Curated from the source machine. Machine-specific units
+# (e.g. trackpoint-fix) are intentionally left out.
+system_services:
+  - bluetooth.service
+  - docker.service
+  - NetworkManager.service
+  - sddm.service
+  - systemd-timesyncd.service
+  - tailscaled.service
+
+# Optional services — installed on the source box but NOT auto-enabled.
+# Enable by moving into system_services above if you want them:
+#   - snapd.service            # was enabled on source
+#   - snapd.apparmor.service   # was enabled on source
+#   - teamviewerd.service      # was enabled on source
+#   - tlp.service              # laptop power mgmt (conflicts with power-profiles-daemon)
+#   - power-profiles-daemon.service
+system_services_optional: []
+
+# ---- User services to enable (systemd --user) -------------------
+user_services:
+  - pipewire.socket
+  - pipewire-pulse.socket
+  - wireplumber.service
+  - gnome-keyring-daemon.socket
+
+# ---- Extra groups the user should belong to --------------------
+user_groups:
+  - wheel
+  - docker

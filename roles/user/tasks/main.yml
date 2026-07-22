@@ -1,0 +1,23 @@
+---
+# Add the login user to the required groups and set zsh as the default shell.
+
+- name: Ensure the required groups exist
+  become: true
+  ansible.builtin.group:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ user_groups }}"
+
+- name: Add user to groups
+  become: true
+  ansible.builtin.user:
+    name: "{{ target_user }}"
+    groups: "{{ user_groups }}"
+    append: true
+  # Group changes take effect after the next login (or `newgrp`).
+
+- name: Set zsh as the default login shell
+  become: true
+  ansible.builtin.user:
+    name: "{{ target_user }}"
+    shell: /usr/bin/zsh
