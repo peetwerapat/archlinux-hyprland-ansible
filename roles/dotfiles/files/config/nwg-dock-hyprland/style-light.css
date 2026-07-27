@@ -1,44 +1,46 @@
+/* -----------------------------------------------------
+ * nwg-dock :: minimal
+ * Flat glass strip, hairline border, blue accent on hover.
+ * ----------------------------------------------------- */
+
 @import url("colors.css");
 
 window {
-	background: #FFFFFF;
-	border-radius: 10px;
-	border-style: solid;
-	border-width: 3px;
-	border-color: @secondary;
+    background: alpha(@surface, 0.62);
+    border-radius: 16px;
+    border: 1px solid alpha(@on_surface, 0.08);
 }
 
 #box {
-  /* Define attributes of the box surrounding icons here */
-  padding: 10px
+    padding: 6px;
 }
 
-#active {
-	/* This is to underline the button representing the currently active window */
-	border-bottom: solid 0px;
-	border-color: @on_surface
-}
-
-button, image {
-	background: none;
-	border-style: none;
-	box-shadow: none;
-	color: @secondary;
+button,
+image {
+    background: none;
+    border: none;
+    box-shadow: none;
+    color: alpha(@on_surface, 0.75);
 }
 
 button {
-	padding: 4px;
-	margin-left: 4px;
-	margin-right: 4px;
-	color: @secondary;
-  	font-size: 12px
+    font-family: "Adwaita Sans", "Cantarell", sans-serif;
+    padding: 4px;
+    margin: 0 3px;
+    border-radius: 8px;
+    font-size: 12px;
 }
 
 button:hover {
-	background-color: rgba(255, 255, 255, 0.15);
-	border-radius: 10px;
+    background-color: alpha(@accent, 0.20);
+    color: @accent;
+    border-radius: 8px;
 }
 
 button:focus {
-	box-shadow: none
+    box-shadow: none;
+}
+
+#active {
+    border-bottom: solid 2px @accent;
 }

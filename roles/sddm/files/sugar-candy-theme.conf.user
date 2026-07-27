@@ -1,0 +1,33 @@
+# -----------------------------------------------------
+# Sugar Candy :: blue glass overrides
+#
+# Dropped in as  /usr/share/sddm/themes/sddm-sugar-candy/theme.conf.user
+# SDDM reads theme.conf first and then merges this file on top, so the
+# packaged theme.conf stays untouched — delete this file to go back.
+#
+# Background, form position and every layout option are deliberately
+# NOT set here: they keep coming from the original theme.conf.
+# Only colors, corner radius and the font are re-styled to match the
+# desktop (matugen surface #111318 + pinned blue accent #adc6ff).
+# -----------------------------------------------------
+[General]
+
+## Colors — same values waybar / rofi / swaync / hyprlock use
+MainColor="#e2e2e9"
+AccentColor="#adc6ff"
+BackgroundColor="#111318"
+OverrideLoginButtonTextColor="#102f60"
+
+## Slightly softer shadow than the default, to match the desktop depth
+InterfaceShadowSize="5"
+InterfaceShadowOpacity="0.45"
+
+## Same corner radius scale as the bar / launcher / notification cards
+RoundCorners="14"
+
+## Desktop UI font — same family as GTK/Qt (Thai falls back through fontconfig)
+Font="Adwaita Sans"
+
+## Clock formatting, matching the bar and the lock screen
+HourFormat="HH:mm"
+DateFormat="dddd, d MMMM"

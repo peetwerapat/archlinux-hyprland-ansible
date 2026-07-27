@@ -1,5 +1,11 @@
 * {
     background: {{colors.on_secondary.default.rgba | set_alpha: 0.7}};
+    surface-glass: {{colors.surface.default.rgba | set_alpha: 0.72}};
+    surface-container-glass: {{colors.surface_container.default.rgba | set_alpha: 0.85}};
+    accent: {{colors.accent.default.hex}};
+    on-accent: {{colors.on_accent.default.hex}};
+    accent-container: {{colors.accent_container.default.hex}};
+    on-accent-container: {{colors.on_accent_container.default.hex}};
     primary: {{colors.primary.default.hex}};
     primary-fixed: {{colors.primary_fixed.default.hex}};
     primary-fixed-dim: {{colors.primary_fixed_dim.default.hex}};

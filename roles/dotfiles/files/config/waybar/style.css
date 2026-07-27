@@ -1,0 +1,252 @@
+/* -----------------------------------------------------
+ * Waybar :: blue glass islands
+ *
+ * The bar is transparent — each cluster (workspaces, clock,
+ * right-hand group) floats as its own glass island on the
+ * blurred backdrop set in ~/.config/hypr/conf/layerrules.conf.
+ *
+ * @accent is the blue pinned in matugen: it stays blue on any
+ * wallpaper and carries every active state.
+ * Shadows are inset only — GTK does not clip a child's outer
+ * shadow to the parent's rounded corners, so an outer glow
+ * would bleed onto the desktop.
+ * ----------------------------------------------------- */
+
+@import './colors.css';
+
+/* -----------------------------------------------------
+ * General
+ * ----------------------------------------------------- */
+
+* {
+    font-family: "Adwaita Sans", "Cantarell", "FiraCode Nerd Font", "Font Awesome 6 Free", sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+    text-shadow: none;
+}
+
+window#waybar {
+    background: transparent;
+    color: @on_surface;
+    border: none;
+}
+
+tooltip {
+    background-color: alpha(@surface_container, 0.97);
+    border: 1px solid alpha(@accent, 0.28);
+    border-radius: 14px;
+    padding: 4px;
+}
+
+tooltip label {
+    color: alpha(@on_surface, 0.9);
+    padding: 6px 8px;
+}
+
+/* -----------------------------------------------------
+ * Islands
+ * ----------------------------------------------------- */
+
+#workspaces,
+#clock,
+#right {
+    background: alpha(@surface, 0.58);
+    border: 1px solid alpha(@on_surface, 0.08);
+    border-radius: 15px;
+    box-shadow: inset 0 1px 0 alpha(#ffffff, 0.06);
+}
+
+#workspaces {
+    margin: 4px 0 4px 2px;
+    padding: 0 4px;
+}
+
+#clock {
+    margin: 4px 0;
+    padding: 0 20px;
+    color: @accent;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+}
+
+#clock:hover {
+    background: alpha(@accent, 0.16);
+}
+
+#right {
+    margin: 4px 2px 4px 0;
+    padding: 0 4px;
+}
+
+/* -----------------------------------------------------
+ * Workspaces
+ * ----------------------------------------------------- */
+
+#workspaces button {
+    padding: 0 10px;
+    margin: 4px 2px;
+    background: transparent;
+    color: alpha(@on_surface, 0.42);
+    border-radius: 11px;
+    transition: all 0.22s cubic-bezier(0.25, 1, 0.3, 1);
+}
+
+#workspaces button:hover {
+    background: alpha(@accent, 0.18);
+    color: @accent;
+}
+
+#workspaces button.active {
+    background: linear-gradient(140deg, @accent, shade(@accent, 0.82));
+    color: @on_accent;
+    font-weight: 700;
+    padding: 0 15px;
+    box-shadow: inset 0 1px 0 alpha(#ffffff, 0.35),
+                inset 0 -1px 0 alpha(#000000, 0.15);
+}
+
+#workspaces button.urgent {
+    background: linear-gradient(140deg, @error, shade(@error, 0.82));
+    color: @on_error;
+    font-weight: 700;
+}
+
+/* -----------------------------------------------------
+ * Window title (floats between the islands)
+ * ----------------------------------------------------- */
+
+#window {
+    color: alpha(@on_surface, 0.5);
+    background: transparent;
+    padding: 0 14px;
+    margin: 0;
+    font-style: italic;
+}
+
+window#waybar.empty #window {
+    background: transparent;
+    padding: 0;
+}
+
+/* -----------------------------------------------------
+ * Modules inside the right island
+ * ----------------------------------------------------- */
+
+#pulseaudio,
+#network,
+#battery,
+#custom-language,
+#tray,
+#custom-system,
+#power-profiles-daemon,
+#custom-notification,
+#custom-exit {
+    background: transparent;
+    color: alpha(@on_surface, 0.82);
+    padding: 0 9px;
+    margin: 4px 1px;
+    border-radius: 11px;
+    transition: all 0.2s ease;
+}
+
+#custom-language {
+    color: alpha(@on_surface, 0.35);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 0 7px;
+}
+
+#custom-exit {
+    color: alpha(@on_surface, 0.45);
+    padding: 0 11px;
+}
+
+#pulseaudio:hover,
+#network:hover,
+#battery:hover,
+#custom-language:hover,
+#custom-system:hover,
+#power-profiles-daemon:hover,
+#custom-notification:hover {
+    background: alpha(@accent, 0.16);
+    color: @accent;
+}
+
+#custom-exit:hover {
+    background: alpha(@error, 0.18);
+    color: @error;
+}
+
+#tray {
+    padding: 0 6px;
+}
+
+#tray menu {
+    background-color: @surface_container;
+    color: @on_surface;
+    border: 1px solid alpha(@on_surface, 0.10);
+    border-radius: 14px;
+}
+
+/* -----------------------------------------------------
+ * Hardware drawer (hover the chip icon)
+ * ----------------------------------------------------- */
+
+#hardware {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+#cpu,
+#memory,
+#disk {
+    background: alpha(@on_surface, 0.06);
+    color: alpha(@on_surface, 0.65);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 0 8px;
+    margin: 6px 2px;
+    border-radius: 9px;
+    transition: all 0.2s ease;
+}
+
+#cpu:hover,
+#memory:hover,
+#disk:hover {
+    background: alpha(@accent, 0.18);
+    color: @accent;
+}
+
+/* -----------------------------------------------------
+ * States
+ * ----------------------------------------------------- */
+
+#pulseaudio.muted,
+#network.disconnected {
+    color: alpha(@on_surface, 0.3);
+}
+
+#battery.warning:not(.charging) {
+    color: @tertiary;
+}
+
+#battery.critical:not(.charging) {
+    background: alpha(@error, 0.18);
+    color: @error;
+}
+
+#battery.charging {
+    color: @accent;
+}
+
+#power-profiles-daemon.performance {
+    color: @tertiary;
+}
+
+#power-profiles-daemon.power-saver {
+    color: @accent;
+}

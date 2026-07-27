@@ -1,1 +1,9 @@
 @import 'colors.css';
+
+/* Everything (accent, window, popover, card, sidebar) is defined in
+   colors.css, which matugen regenerates from
+   ~/.config/matugen/templates/gtk-colors.css.
+   Do NOT redefine those names here with tokens that only exist in the
+   waybar/swaync palette (@surface, @accent, ...) — GTK resolves an
+   unknown color to transparent, which makes popovers and dialogs
+   see-through. */

@@ -12,7 +12,7 @@
 /* ---- Configuration ---- */
 configuration {
     modi:                       "drun,filebrowser,window,run";
-    font:                       "Fira Sans 11";
+    font:                       "Adwaita Sans 11";
     show-icons:                 true;
     icon-theme:                 "Tela-circle-dracula";
     display-drun:                " ";
@@ -28,26 +28,22 @@ configuration {
     
 }
 
-/* ---- Load font ---- */
-@import "~/.config/ml4w/settings/rofi-font.rasi"
-
 /* ---- Load colors ---- */
 @theme "~/.config/rofi/colors.rasi"
 
-/* ---- Load wallpaper ---- */
-@import "~/.cache/ml4w/hyprland-dotfiles/current_wallpaper.rasi"
 
-/* ---- Load border width ---- */
-@import "~/.config/ml4w/settings/rofi-border.rasi"
+/* ---- Border width ---- */
+* { border-width: 1px; }
 
-/* ---- Load border radius ---- */
-@import "~/.config/ml4w/settings/rofi-border-radius.rasi"
+/* ---- Border radius ---- */
+* { border-radius: 12px; }
 
 /* ---- Map colors ---- */
 * {
-    color11: @primary;
-    color5: @on-primary-fixed;
+    color11: @outline-variant;
+    color5: @surface-container-high;
     foreground: @on-surface;
+    background: @surface-glass;
 }
 
 // Main //
@@ -78,7 +74,6 @@ mainbox {
     orientation:                 horizontal;
     children:                    [ "listbox" ];
     background-color:            transparent;
-    background-image:            @current-image;
 }
 
 /* ---- Imagebox ---- */
@@ -96,7 +91,6 @@ inputbar {
     padding:                     1em;
     children:                    [ "textbox-prompt-colon", "entry" ];
     background-color:            transparent;
-    background-image:            url("~/.cache/ml4w/hyprland-dotfiles/current_wallpaper", width);
 }
 
 textbox-prompt-colon {
@@ -105,14 +99,13 @@ textbox-prompt-colon {
     str:                         "  ";
     padding:                     1em 0.2em 0em 0em;
     text-color:                  @foreground;
-    border-radius:               2em 0em 0em 2em;
+    border-radius:               4px 0px 0px 4px;
     background-color:            @color5;
-    background-image:            url("~/.cache/ml4w/hyprland-dotfiles/current_wallpaper", width);
 }
 
 entry {
     enabled:                     true;
-    border-radius:               0em 2em 2em 0em;
+    border-radius:               0px 4px 4px 0px;
     spacing:                     1em;
     padding:                     1em;
     background-color:            @color5;
@@ -156,14 +149,14 @@ mode-switcher {
     orientation:                 vertical;
     width:                       6.6em;
     enabled:                     true;
-    padding:                     1.5em;
-    spacing:                     1.5em;
+    padding:                     0.75em;
+    spacing:                     0.6em;
     background-color:            transparent;
 }
 
 button {
     cursor:                      pointer;
-    border-radius:               2em;
+    border-radius:               4px;
     background-color:            @background;
     text-color:                  @foreground;
 }
@@ -181,13 +174,13 @@ element {
     cursor:                      pointer;
     background-color:            transparent;
     text-color:                  @foreground;
-    border-radius:               1.1em;
+    border-radius:               4px;
 }
 
 element selected.normal {
     background-color:            @color5;
     text-color:                  @foreground;
-    border-radius:               1.5em;
+    border-radius:               4px;
 }
 
 element normal.normal {
@@ -253,7 +246,7 @@ message {
     margin:                      2.2em 0em 0em 0em;
     padding:                     0em;
     spacing:                     0em;
-    border-radius:               1.1em;
+    border-radius:               4px;
 }
 
 textbox {

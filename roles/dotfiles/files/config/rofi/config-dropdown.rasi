@@ -1,0 +1,154 @@
+/*
+ * -----------------------------------------------------
+ * Rofi :: dropdown panel
+ *
+ * Compact panel used by the waybar volume / wifi buttons.
+ * Anchored under the bar from the command line
+ * (-location 3 -yoffset .. -xoffset ..).
+ * Same glass + blue accent as the launcher.
+ * -----------------------------------------------------
+ */
+
+configuration {
+    font:                        "Adwaita Sans 11";
+    show-icons:                  false;
+    hover-select:                true;
+    me-select-entry:             "";
+    me-accept-entry:             "MousePrimary";
+}
+
+@theme "~/.config/rofi/colors.rasi"
+
+* {
+    fg:          @on-surface;
+    fg-muted:    @on-surface-variant;
+    fg-faint:    @outline;
+    hairline:    @outline-variant;
+    sel-bg:      @accent;
+    sel-fg:      @on-accent;
+    background:  @surface-glass;
+}
+
+window {
+    width:                       23em;
+    transparency:                "real";
+    enabled:                     true;
+    cursor:                      "default";
+    spacing:                     0em;
+    padding:                     0.5em;
+    border:                      1px;
+    border-color:                @hairline;
+    border-radius:               18px;
+    background-color:            @background;
+}
+
+mainbox {
+    enabled:                     true;
+    spacing:                     0em;
+    padding:                     0em;
+    orientation:                 vertical;
+    children:                    [ "inputbar", "message", "listview" ];
+    background-color:            transparent;
+}
+
+inputbar {
+    enabled:                     true;
+    spacing:                     0.5em;
+    padding:                     0.55em 0.7em 0.7em 0.7em;
+    margin:                      0em 0em 0.35em 0em;
+    children:                    [ "textbox-prompt-colon", "entry" ];
+    background-color:            transparent;
+    border:                      0px 0px 1px 0px;
+    border-color:                @hairline;
+}
+
+textbox-prompt-colon {
+    enabled:                     true;
+    expand:                      false;
+    str:                         "";
+    text-color:                  @accent;
+    background-color:            transparent;
+    vertical-align:              0.5;
+}
+
+entry {
+    enabled:                     true;
+    padding:                     0em;
+    background-color:            transparent;
+    text-color:                  @fg;
+    cursor:                      text;
+    placeholder:                 "";
+    placeholder-color:           @fg-faint;
+    vertical-align:              0.5;
+}
+
+listview {
+    padding:                     0.15em 0em;
+    spacing:                     0.12em;
+    enabled:                     true;
+    columns:                     1;
+    lines:                       9;
+    cycle:                       true;
+    dynamic:                     true;
+    scrollbar:                   false;
+    layout:                      vertical;
+    fixed-height:                false;
+    cursor:                      "default";
+    background-color:            transparent;
+    text-color:                  @fg;
+}
+
+element {
+    enabled:                     true;
+    spacing:                     0.7em;
+    padding:                     0.5em 0.7em;
+    cursor:                      pointer;
+    border-radius:               11px;
+    background-color:            transparent;
+    text-color:                  @fg-muted;
+}
+
+element selected.normal,
+element selected.urgent,
+element selected.active {
+    background-color:            @sel-bg;
+    text-color:                  @sel-fg;
+}
+
+element-text {
+    vertical-align:              0.5;
+    horizontal-align:            0.0;
+    cursor:                      inherit;
+    background-color:            transparent;
+    text-color:                  inherit;
+}
+
+message {
+    background-color:            transparent;
+    padding:                     0.15em 0em 0.45em 0em;
+    margin:                      0em;
+    border:                      0px 0px 1px 0px;
+    border-color:                @hairline;
+}
+
+error-message {
+    text-color:                  @fg;
+    background-color:            transparent;
+    children:                    [ "textbox" ];
+}
+
+textbox {
+    text-color:                  inherit;
+    background-color:            transparent;
+    vertical-align:              0.5;
+    horizontal-align:            0.5;
+    padding:                     0.5em;
+}
+
+message textbox {
+    background-color:            transparent;
+    text-color:                  @accent;
+    horizontal-align:            0.0;
+    padding:                     0.35em 0.7em;
+    font:                        "Adwaita Sans 11";
+}

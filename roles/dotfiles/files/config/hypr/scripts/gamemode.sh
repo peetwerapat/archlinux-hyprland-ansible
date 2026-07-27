@@ -1,25 +1,26 @@
-# #!/bin/bash
-# #   ____                                          _
-# #  / ___| __ _ _ __ ___   ___ _ __ ___   ___   __| | ___
-# # | |  _ / _` | '_ ` _ \ / _ \ '_ ` _ \ / _ \ / _` |/ _ \
-# # | |_| | (_| | | | | | |  __/ | | | | | (_) | (_| |  __/
-# #  \____|\__,_|_| |_| |_|\___|_| |_| |_|\___/ \__,_|\___|
-# #
-# #
-#
-# if [ -f $HOME/.config/ml4w/settings/gamemode-enabled ]; then
-#     hyprctl reload
-#     rm $HOME/.config/ml4w/settings/gamemode-enabled
-#     notify-send "Gamemode deactivated" "Animations and blur enabled"
-# else
-#     hyprctl --batch "\
-#         keyword animations:enabled 0;\
-#         keyword decoration:shadow:enabled 0;\
-#         keyword decoration:blur:enabled 0;\
-#         keyword general:gaps_in 0;\
-#         keyword general:gaps_out 0;\
-#         keyword general:border_size 1;\
-#         keyword decoration:rounding 0"
-#     touch $HOME/.config/ml4w/settings/gamemode-enabled
-#     notify-send "Gamemode activated" "Animations and blur disabled"
-# fi
+#!/usr/bin/env bash
+# -----------------------------------------------------
+# Gamemode: drop every effect for maximum frames,
+# toggle again to reload the normal config.
+# -----------------------------------------------------
+set -uo pipefail
+
+STATE="$HOME/.cache/hypr/gamemode"
+mkdir -p "$(dirname "$STATE")"
+
+if [ -f "$STATE" ]; then
+    rm -f "$STATE"
+    hyprctl reload >/dev/null
+    notify-send "Gamemode off" "Animations, blur and gaps are back"
+else
+    hyprctl --batch "\
+        keyword animations:enabled 0;\
+        keyword decoration:shadow:enabled 0;\
+        keyword decoration:blur:enabled 0;\
+        keyword general:gaps_in 0;\
+        keyword general:gaps_out 0;\
+        keyword general:border_size 1;\
+        keyword decoration:rounding 0" >/dev/null
+    touch "$STATE"
+    notify-send "Gamemode on" "Animations, blur and gaps disabled"
+fi

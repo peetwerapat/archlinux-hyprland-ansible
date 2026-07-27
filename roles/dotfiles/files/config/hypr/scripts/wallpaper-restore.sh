@@ -1,48 +1,17 @@
-#!/bin/bash
-#                _ _
-# __      ____ _| | |_ __   __ _ _ __   ___ _ __
-# \ \ /\ / / _` | | | '_ \ / _` | '_ \ / _ \ '__|
-#  \ V  V / (_| | | | |_) | (_| | |_) |  __/ |
-#   \_/\_/ \__,_|_|_| .__/ \__,_| .__/ \___|_|
-#                   |_|         |_|
-#
+#!/usr/bin/env bash
 # -----------------------------------------------------
-# Restore last wallpaper
+# Restore the last wallpaper at login (no palette rebuild —
+# the generated color files are already on disk).
 # -----------------------------------------------------
+set -uo pipefail
 
-# -----------------------------------------------------
-# Set defaults
-# -----------------------------------------------------
+CACHE_FILE="$HOME/.cache/wallpaper/current"
+DEFAULT="$HOME/wallpaper/DesktopBG.jpeg"
 
-defaultwallpaper="$HOME/wallpaper/DesktopBG.jpeg"
-cachefile="$HOME/.config/ml4w/cache/current_wallpaper"
+wallpaper="$(cat "$CACHE_FILE" 2>/dev/null)"
+[ -f "$wallpaper" ] || wallpaper="$DEFAULT"
 
-# -----------------------------------------------------
-# Get current wallpaper
-# -----------------------------------------------------
-
-if [ -f "$cachefile" ]; then
-    sed -i "s|~|$HOME|g" "$cachefile"
-    wallpaper=$(cat $cachefile)
-    if [ -f $wallpaper ]; then
-        echo ":: Wallpaper $wallpaper exists"
-    else
-        echo ":: Wallpaper $wallpaper does not exist. Using default."
-        wallpaper=$defaultwallpaper
-    fi
-else
-    echo ":: $cachefile does not exist. Using default wallpaper."
-    wallpaper=$defaultwallpaper
-fi
-
-# -----------------------------------------------------
-# Set wallpaper
-# -----------------------------------------------------
-
-echo ":: Setting wallpaper with source image $wallpaper"
-# waypaper --wallpaper "$wallpaper"
-
-hyprpaper &
-sleep 0.5
-hyprctl hyprpaper preload "$wallpaper"
-hyprctl hyprpaper wallpaper ",$wallpaper"
+echo ":: Restoring wallpaper $wallpaper"
+pgrep -x hyprpaper >/dev/null || { hyprpaper >/dev/null 2>&1 & sleep 0.5; }
+hyprctl hyprpaper preload "$wallpaper" >/dev/null
+hyprctl hyprpaper wallpaper ",$wallpaper" >/dev/null

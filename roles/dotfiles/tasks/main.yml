@@ -1,7 +1,8 @@
 ---
 # Deploy the config snapshot taken from the source machine.
-# Files live under roles/dotfiles/files/{config,home}. Symlinks were
-# dereferenced at capture time, so everything here is real content.
+# Files live under roles/dotfiles/files/{config,home,wallpaper}.
+# Symlinks were dereferenced at capture time, so everything here is real
+# content — the machine no longer keeps a separate ~/dotfiles tree.
 
 - name: Ensure ~/.config exists
   ansible.builtin.file:
@@ -22,9 +23,78 @@
     recursive: true
   # `synchronize` runs rsync locally when ansible_connection=local.
 
-- name: Deploy home-directory dotfiles (.zshrc, .gitconfig, ...)
+- name: Deploy home-directory dotfiles (.zshrc, .zprofile, ...)
   ansible.posix.synchronize:
     src: "files/home/"
     dest: "{{ ansible_env.HOME }}/"
     archive: true
     recursive: true
+
+# --- things the configs expect to exist -------------------------------
+
+- name: Ensure the wallpaper folder exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/wallpaper"
+    state: directory
+    mode: "0755"
+
+- name: Seed the default wallpaper
+  ansible.builtin.copy:
+    src: "wallpaper/DesktopBG.jpeg"
+    dest: "{{ ansible_env.HOME }}/wallpaper/DesktopBG.jpeg"
+    mode: "0644"
+    force: false
+  # hypr/scripts/wallpaper*.sh fall back to this file.
+
+- name: Ensure the wallpaper cache folder exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.cache/wallpaper"
+    state: directory
+    mode: "0755"
+
+- name: Make the hypr and waybar scripts executable
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/{{ item }}"
+    mode: "0755"
+  loop:
+    - hypr/scripts/cleanup.sh
+    - hypr/scripts/cliphist.sh
+    - hypr/scripts/gamemode.sh
+    - hypr/scripts/gtk.sh
+    - hypr/scripts/kb-layout.sh
+    - hypr/scripts/keybindings.sh
+    - hypr/scripts/loadconfig.sh
+    - hypr/scripts/nm-applet.sh
+    - hypr/scripts/power.sh
+    - hypr/scripts/screenshot.sh
+    - hypr/scripts/toggle-animations.sh
+    - hypr/scripts/volume-menu.sh
+    - hypr/scripts/wallpaper.sh
+    - hypr/scripts/wallpaper-restore.sh
+    - hypr/scripts/wifi-menu.sh
+    - hypr/scripts/wlogout.sh
+    - hypr/scripts/xdg.sh
+    - waybar/launch.sh
+    - waybar/toggle.sh
+    - nwg-dock-hyprland/launch.sh
+
+- name: Ensure ~/.vim exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.vim"
+    state: directory
+    mode: "0755"
+
+- name: Point ~/.vim/vimrc at the copy in ~/.config
+  ansible.builtin.file:
+    src: "{{ ansible_env.HOME }}/.config/vim/vimrc"
+    dest: "{{ ansible_env.HOME }}/.vim/vimrc"
+    state: link
+    force: true
+  # vim on Arch does not read $XDG_CONFIG_HOME/vim/vimrc on its own.
+
+- name: Generate the color palette from the wallpaper
+  ansible.builtin.command:
+    cmd: "matugen image {{ ansible_env.HOME }}/wallpaper/DesktopBG.jpeg -m dark"
+  changed_when: true
+  # Writes the waybar / rofi / swaync / kitty / gtk / qt6ct / hyprland color
+  # files. waypaper re-runs it (post_command) on every wallpaper change.

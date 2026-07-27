@@ -10,12 +10,21 @@ target_user: "{{ ansible_user_id }}"
 # ---- Official-repo packages (pacman) ----------------------------
 # NOTE: intel-ucode / linux-firmware-intel / intel-media-driver are
 #       Intel-specific — swap for amd-ucode etc. on AMD hardware.
+#
+# The desktop no longer uses the ml4w-hyprland meta package, so anything
+# it used to pull in as a dependency is listed here explicitly:
+#   kitty, hyprlock, hypridle, hyprpaper, xdg-desktop-portal-hyprland,
+#   qt5-wayland, qt6-wayland, libnotify, bluez-utils, vim, man-pages, zip
+# matugen generates the color palette; adwaita-fonts is the UI font;
+# nmap provides ncat, used by the keyboard-layout script.
 pacman_packages:
+  - adwaita-fonts
   - arp-scan
   - base
   - base-devel
   - bind
   - blueman
+  - bluez-utils
   - brightnessctl
   - btrfs-progs
   - clang
@@ -45,7 +54,11 @@ pacman_packages:
   - gtk4
   - gum
   - gvfs
+  - gvfs-mtp
   - htop
+  - hypridle
+  - hyprlock
+  - hyprpaper
   - hyprpicker
   - i2c-tools
   - imagemagick
@@ -53,10 +66,13 @@ pacman_packages:
   - intel-media-driver
   - intel-ucode
   - jq
+  - kitty
   - lazydocker
   - libadwaita
   - libfprint
   - libinput-tools
+  - libmtp
+  - libnotify
   - libpulse
   - libreoffice-fresh
   - libva-utils
@@ -68,6 +84,8 @@ pacman_packages:
   - llvm
   - loupe
   - lua-language-server
+  - man-pages
+  - matugen
   - maven
   - mpv
   - nautilus
@@ -100,6 +118,8 @@ pacman_packages:
   - qt5-graphicaleffects
   - qt5-quickcontrols2
   - qt5-svg
+  - qt5-wayland
+  - qt6-wayland
   - qt6ct
   - reflector
   - rofi
@@ -122,12 +142,15 @@ pacman_packages:
   - unzip
   - uwsm
   - valkey
+  - vim
   - waybar
   - wget
   - wireguard-tools
   - wireplumber
   - xclip
   - xdg-desktop-portal-gtk
+  - xdg-desktop-portal-hyprland
+  - zip
   - zsh
   - zsh-completions
 
@@ -146,12 +169,12 @@ aur_packages:
   - hyprshade
   - jdtls
   - lazysql
-  - ml4w-hyprland
   - nautilus-open-any-terminal
   - ngrok
   - notion-app-electron
   - postman-bin
   - python-screeninfo
+  - sddm-sugar-candy-git
   - slack-desktop
   - snapd
   - spring-boot-cli
