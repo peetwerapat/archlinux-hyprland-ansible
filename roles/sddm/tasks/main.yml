@@ -1,0 +1,59 @@
+---
+# Login screen: keep the Sugar Candy layout/background, restyle it with the
+# desktop palette (surface #111318 + pinned blue accent #adc6ff).
+#
+# The packaged theme.conf is never edited — SDDM merges theme.conf.user
+# on top of it, so `rm theme.conf.user` restores the stock look.
+
+- name: Look for an installed Sugar Candy theme
+  become: true
+  ansible.builtin.stat:
+    path: "/usr/share/sddm/themes/{{ item }}"
+  loop:
+    - sddm-sugar-candy
+    - sugar-candy
+  register: sugar_candidates
+
+- name: Remember which directory name it uses
+  ansible.builtin.set_fact:
+    sugar_theme: >-
+      {{ (sugar_candidates.results | selectattr('stat.exists') | map(attribute='item') | list | first) | default('', true) }}
+
+- name: Warn when Sugar Candy is missing
+  ansible.builtin.debug:
+    msg: >-
+      Sugar Candy is not installed (expected /usr/share/sddm/themes/sddm-sugar-candy).
+      Install the AUR package sddm-sugar-candy-git and re-run with --tags sddm.
+  when: sugar_theme | length == 0
+
+- name: Deploy the blue-glass color override
+  become: true
+  ansible.builtin.copy:
+    src: sugar-candy-theme.conf.user
+    dest: "/usr/share/sddm/themes/{{ sugar_theme }}/theme.conf.user"
+    owner: root
+    group: root
+    mode: "0644"
+  when: sugar_theme | length > 0
+
+- name: Ensure /etc/sddm.conf.d exists
+  become: true
+  ansible.builtin.file:
+    path: /etc/sddm.conf.d
+    state: directory
+    mode: "0755"
+
+- name: Select the theme and cursor
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/sddm.conf.d/zz-theme.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      # Loaded after sddm.conf (files are read in alphabetical order),
+      # so this wins over any Current= set there.
+      [Theme]
+      Current={{ sugar_theme }}
+      CursorTheme=Bibata-Modern-Ice
+  when: sugar_theme | length > 0

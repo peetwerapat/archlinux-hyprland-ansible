@@ -52,7 +52,7 @@
         },
         "mpris": {
             "image-size": 50,
-            "image-radius": 0
+            "image-radius": 8
         },
         "volume": {
             "label": "󰕾"
@@ -76,7 +76,7 @@
                 },
                 {
                     "label": "",
-                    "command": "bash -c $HOME/.config/ml4w/scripts/wlogout.sh"
+                    "command": "$HOME/.config/hypr/scripts/wlogout.sh"
                 }
             ]
         }

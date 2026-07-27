@@ -1,6 +1,6 @@
 ---
 # =============================================================================
-# site.yml — reproduce this Arch + Hyprland (ML4W) machine on a new box.
+# site.yml — reproduce this Arch + Hyprland workstation on a new box.
 #
 #   ansible-playbook site.yml --ask-become-pass
 #
@@ -25,3 +25,4 @@
     - { role: services, tags: [services] }
     - { role: user,     tags: [user] }
     - { role: dotfiles, tags: [dotfiles] }
+    - { role: sddm,     tags: [sddm] }

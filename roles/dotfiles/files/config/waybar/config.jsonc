@@ -1,0 +1,195 @@
+// -----------------------------------------------------
+// Waybar :: blue glass islands
+// The bar itself is transparent; workspaces, the clock and
+// the right-hand group each render as their own floating
+// island (see style.css).
+// -----------------------------------------------------
+{
+    "layer": "top",
+    "position": "top",
+    "height": 40,
+    "margin-top": 8,
+    "margin-bottom": 0,
+    "margin-left": 12,
+    "margin-right": 12,
+    "spacing": 0,
+    "modules-left": [
+        "hyprland/workspaces",
+        "hyprland/window"
+    ],
+    "modules-center": [
+        "clock"
+    ],
+    "modules-right": [
+        "group/right"
+    ],
+    "hyprland/workspaces": {
+        "format": "{id}",
+        "on-click": "activate",
+        "on-scroll-up": "hyprctl dispatch workspace r-1",
+        "on-scroll-down": "hyprctl dispatch workspace r+1",
+        "all-outputs": true,
+        "active-only": false,
+        "persistent-workspaces": {
+            "*": 1
+        }
+    },
+    "hyprland/window": {
+        "format": "{}",
+        "max-length": 48,
+        "separate-outputs": true,
+        "rewrite": {
+            "(.*) - Brave": "$1",
+            "(.*) - Chromium": "$1",
+            "(.*) - Outlook": "$1",
+            "(.*) Microsoft Teams": "$1"
+        }
+    },
+    "clock": {
+        "format": "{:%H:%M}",
+        "tooltip": true,
+        "tooltip-format": "{:%A, %d %B %Y}"
+    },
+    "tray": {
+        "icon-size": 16,
+        "spacing": 12
+    },
+    "group/hardware": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 300,
+            "transition-left-to-right": false
+        },
+        "modules": [
+            "custom/system",
+            "cpu",
+            "memory",
+            "disk"
+        ]
+    },
+    "custom/system": {
+        "format": "󰍛",
+        "tooltip": true,
+        "tooltip-format": "Hover for CPU / RAM / Disk\nClick opens the system monitor"
+    },
+    "cpu": {
+        "format": "CPU {usage}%",
+        "on-click": "kitty --class floating-term -e htop"
+    },
+    "memory": {
+        "format": "RAM {}%",
+        "on-click": "kitty --class floating-term -e htop"
+    },
+    "disk": {
+        "interval": 30,
+        "path": "/",
+        "format": "DISK {percentage_used}%",
+        "on-click": "kitty --class floating-term -e htop"
+    },
+    "pulseaudio": {
+        "format": "{icon}   {volume}%",
+        "format-muted": "󰝟  muted",
+        "format-icons": {
+            "headphone": "󰋋",
+            "hands-free": "󰋎",
+            "headset": "󰋎",
+            "phone": "󰏲",
+            "portable": "󰄜",
+            "car": "󰄋",
+            "default": [
+                "󰕿",
+                "󰖀",
+                "󰕾"
+            ]
+        },
+        "on-click": "~/.config/hypr/scripts/volume-menu.sh",
+        "on-click-right": "pavucontrol",
+        "on-scroll-up": "pactl set-sink-mute @DEFAULT_SINK@ 0 && pactl set-sink-volume @DEFAULT_SINK@ +5%",
+        "on-scroll-down": "pactl set-sink-mute @DEFAULT_SINK@ 0 && pactl set-sink-volume @DEFAULT_SINK@ -5%",
+        "tooltip-format": "Left: volume menu\nRight: mixer\nScroll: change volume"
+    },
+    "network": {
+        "format-wifi": "   {essid}",
+        "format-ethernet": "   {ifname}",
+        "format-disconnected": "   offline",
+        "max-length": 22,
+        "tooltip-format-wifi": "  {ifname} @ {essid}\nIP: {ipaddr}\nStrength: {signalStrength}%\nUp: {bandwidthUpBits} Down: {bandwidthDownBits}",
+        "tooltip-format-ethernet": " {ifname}\nIP: {ipaddr}\nUp: {bandwidthUpBits} Down: {bandwidthDownBits}",
+        "tooltip-format-disconnected": "Disconnected",
+        "on-click": "~/.config/hypr/scripts/wifi-menu.sh",
+        "on-click-right": "~/.config/hypr/scripts/nm-applet.sh toggle"
+    },
+    "battery": {
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon}  {capacity}%",
+        "format-charging": " {capacity}%",
+        "format-plugged": " {capacity}%",
+        "format-icons": [
+            " ",
+            " ",
+            " ",
+            " ",
+            " "
+        ]
+    },
+    "power-profiles-daemon": {
+        "format": "{icon}",
+        "tooltip": true,
+        "tooltip-format": "Power profile: {profile}\nClick to switch",
+        "format-icons": {
+            "default": "󰾅",
+            "performance": "󰓅",
+            "balanced": "󰾅",
+            "power-saver": "󰌪"
+        }
+    },
+    "custom/notification": {
+        "format": "{icon}",
+        "format-icons": {
+            "notification": "<span rise='8pt'><span foreground='red'><sup></sup></span></span>",
+            "none": "",
+            "dnd-notification": "<span rise='8pt'><span foreground='red'><sup></sup></span></span>",
+            "dnd-none": "",
+            "inhibited-notification": "<span rise='8pt'><span foreground='red'><sup></sup></span></span>",
+            "inhibited-none": "",
+            "dnd-inhibited-notification": "<span rise='8pt'><span foreground='red'><sup></sup></span></span>",
+            "dnd-inhibited-none": ""
+        },
+        "return-type": "json",
+        "exec-if": "which swaync-client",
+        "exec": "swaync-client -swb",
+        "on-click": "swaync-client -t -sw",
+        "on-click-right": "swaync-client -d -sw",
+        "escape": true,
+        "tooltip-format": "Left: notifications\nRight: do not disturb"
+    },
+    "custom/exit": {
+        "format": "",
+        "on-click": "~/.config/hypr/scripts/wlogout.sh",
+        "on-click-right": "hyprlock",
+        "tooltip-format": "Left: power menu\nRight: lock screen"
+    },
+    "group/right": {
+        "orientation": "horizontal",
+        "modules": [
+            "tray",
+            "group/hardware",
+            "pulseaudio",
+            "network",
+            "battery",
+            "power-profiles-daemon",
+            "custom/language",
+            "custom/notification",
+            "custom/exit"
+        ]
+    },
+    "custom/language": {
+        "exec": "~/.config/hypr/scripts/kb-layout.sh",
+        "format": "{}",
+        "tooltip": false,
+        "on-click": "hyprctl switchxkblayout at-translated-set-2-keyboard next"
+    }
+}

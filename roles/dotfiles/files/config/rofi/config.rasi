@@ -1,67 +1,67 @@
 /*
-#  ____        __ _  
-# |  _ \ ___  / _(_) 
-# | |_) / _ \| |_| | 
-# |  _ < (_) |  _| | 
-# |_| \_\___/|_| |_| 
-#                    
-# by Stephan Raabe (2023) 
-# ----------------------------------------------------- 
-*/
+ * -----------------------------------------------------
+ * Rofi :: blue glass
+ *
+ * Glass panel (blurred by ~/.config/hypr/conf/layerrules.conf),
+ * solid blue selection, blue prompt. Colors come from
+ * ~/.config/rofi/colors.rasi (matugen, accent pinned blue).
+ * -----------------------------------------------------
+ */
 
 /* ---- Configuration ---- */
 configuration {
     modi:                       "drun,filebrowser,window,run";
-    font:                       "Fira Sans 11";
+    font:                       "Adwaita Sans 11";
     show-icons:                 true;
     icon-theme:                 "kora";
-    display-drun:                " ";
-    display-run:                 " ";
-    display-filebrowser:         "  ";
-    display-window:              "  ";
-	drun-display-format:        "{name}";
+    display-drun:                "apps";
+    display-run:                 "run";
+    display-filebrowser:         "files";
+    display-window:              "windows";
+    drun-display-format:        "{name}\n<span size='small' alpha='55%'>{generic}</span>";
     hover-select:               false;
     scroll-method:              1;
     me-select-entry:            "";
     me-accept-entry:            "MousePrimary";
     window-format:              "{w} · {c} · {t}";
-    
 }
-
-/* ---- Load font ---- */
-@import "~/.config/ml4w/settings/rofi-font.rasi"
 
 /* ---- Load colors ---- */
 @theme "~/.config/rofi/colors.rasi"
 
-/* ---- Load wallpaper ---- */
-@import "~/.cache/ml4w/hyprland-dotfiles/current_wallpaper.rasi"
+/* ---- Border width ---- */
+* { border-width: 1px; }
 
-/* ---- Load border width ---- */
-@import "~/.config/ml4w/settings/rofi-border.rasi"
-
-/* ---- Load border radius ---- */
-@import "~/.config/ml4w/settings/rofi-border-radius.rasi"
+/* ---- Border radius ---- */
+* { border-radius: 18px; }
 
 /* ---- Map colors ---- */
 * {
-    color11: @primary;
-    color5: @on-primary-fixed;
-    foreground: @on-surface;
+    fg:          @on-surface;
+    fg-muted:    @on-surface-variant;
+    fg-faint:    @outline;
+    hairline:    @outline-variant;
+    sel-bg:      @accent;
+    sel-fg:      @on-accent;
+
+    /* kept for compatibility with the other config-*.rasi files */
+    color11:     @outline-variant;
+    color5:      @surface-container-high;
+    foreground:  @on-surface;
+    background:  @surface-glass;
 }
 
-// Main //
+/* ---- Main ---- */
 window {
-    height:                      35em;
-    width:                       56em;
+    width:                       42em;
     transparency:                "real";
     fullscreen:                  false;
     enabled:                     true;
     cursor:                      "default";
     spacing:                     0em;
-    padding:                     0em;
+    padding:                     0.6em;
     border:                      @border-width;
-    border-color:                @color11;
+    border-color:                @hairline;
     border-radius:               @border-radius;
     background-color:            @background;
 }
@@ -71,179 +71,146 @@ mainbox {
     spacing:                     0em;
     padding:                     0em;
     orientation:                 vertical;
-    children:                    [ "inputbar" , "listbox" ];
+    children:                    [ "inputbar", "listview", "mode-switcher" ];
     background-color:            transparent;
-    background-image:            @current-image;
 }
 
-
-// Inputs //
+/* ---- Input ---- */
 inputbar {
     enabled:                     true;
-    spacing:                     0em;
-    padding:                     5em;
+    spacing:                     0.7em;
+    padding:                     0.7em 0.9em;
+    margin:                      0em 0em 0.5em 0em;
     children:                    [ "textbox-prompt-colon", "entry" ];
-    background-color:            transparent;
-    background-image:            url("~/.cache/ml4w/hyprland-dotfiles/current_wallpaper", width);
+    background-color:            @surface-container-glass;
+    border-radius:               12px;
 }
 
 textbox-prompt-colon {
     enabled:                     true;
     expand:                      false;
-    str:                         "  ";
-    padding:                     1em 0.2em 0em 0em;
-    text-color:                  @foreground;
-    border-radius:               2em 0em 0em 2em;
-    background-color:            @color5;
-    background-image:            url("~/.cache/ml4w/hyprland-dotfiles/current_wallpaper", width);
+    str:                         "󰍉";
+    padding:                     0em 0.15em 0em 0.15em;
+    text-color:                  @accent;
+    background-color:            transparent;
+    vertical-align:              0.5;
 }
 
 entry {
     enabled:                     true;
-    border-radius:               0em 2em 2em 0em;
-    spacing:                     1em;
-    padding:                     1em;
-    background-color:            @color5;
-    text-color:                  @foreground;
-    cursor:                      text;
-    placeholder:                 "Search";
-    placeholder-color:           inherit;
-}
-
-// Lists //
-listbox {
     padding:                     0em;
-    spacing:                     0em;
-    orientation:                 horizontal;
-    children:                    [ "listview" , "mode-switcher" ];
-    background-color:            @background;
+    background-color:            transparent;
+    text-color:                  @fg;
+    cursor:                      text;
+    placeholder:                 "Search apps, files, windows";
+    placeholder-color:           @fg-faint;
+    vertical-align:              0.5;
 }
 
+/* ---- List ---- */
 listview {
-    padding:                     1.5em;
-    spacing:                     0.5em;
+    padding:                     0.15em 0em;
+    spacing:                     0.15em;
+    margin:                      0em;
     enabled:                     true;
-    columns:                     2;
-    lines:                       3;
+    columns:                     1;
+    lines:                       6;
     cycle:                       true;
     dynamic:                     true;
     scrollbar:                   false;
     layout:                      vertical;
     reverse:                     false;
-    fixed-height:                true;
+    fixed-height:                false;
     fixed-columns:               true;
     cursor:                      "default";
     background-color:            transparent;
-    text-color:                  @foreground;
+    text-color:                  @fg;
 }
 
-
-// Modes //
-mode-switcher {
-    orientation:                 vertical;
-    width:                       6.6em;
+/* ---- Elements ---- */
+element {
     enabled:                     true;
-    padding:                     1.5em;
-    spacing:                     1.5em;
+    spacing:                     0.85em;
+    padding:                     0.55em 0.8em;
+    margin:                      0em;
+    cursor:                      pointer;
+    border-radius:               12px;
+    background-color:            transparent;
+    text-color:                  @fg-muted;
+}
+
+element normal.normal,
+element normal.urgent,
+element normal.active,
+element alternate.normal,
+element alternate.urgent,
+element alternate.active {
+    background-color:            transparent;
+    text-color:                  @fg-muted;
+}
+
+element selected.normal,
+element selected.urgent,
+element selected.active {
+    background-color:            @sel-bg;
+    text-color:                  @sel-fg;
+}
+
+element-icon {
+    size:                        2.1em;
+    cursor:                      inherit;
+    background-color:            transparent;
+    text-color:                  inherit;
+    vertical-align:              0.5;
+}
+
+element-text {
+    vertical-align:              0.5;
+    horizontal-align:            0.0;
+    cursor:                      inherit;
+    background-color:            transparent;
+    text-color:                  inherit;
+}
+
+/* ---- Modes ---- */
+mode-switcher {
+    orientation:                 horizontal;
+    enabled:                     true;
+    padding:                     0.5em 0em 0em 0em;
+    spacing:                     0.4em;
     background-color:            transparent;
 }
 
 button {
     cursor:                      pointer;
-    border-radius:               2em;
-    background-color:            @background;
-    text-color:                  @foreground;
+    padding:                     0.45em 0em;
+    border-radius:               10px;
+    background-color:            @surface-container-glass;
+    text-color:                  @fg-faint;
 }
 
 button selected {
-    background-color:            @color5;
-    text-color:                  @foreground;
+    background-color:            @accent-container;
+    text-color:                  @on-accent-container;
 }
 
-
-// Elements //
-element {
-    enabled:                     true;
-    spacing:                     0em;
-    padding:                     0.5em;
-    cursor:                      pointer;
+/* ---- Messages ---- */
+message {
     background-color:            transparent;
-    text-color:                  @foreground;
+    margin:                      0.25em 0em 0em 0em;
 }
 
-element selected.normal {
-    background-color:            @color5;
-    text-color:                  @foreground;
-    border-radius:               1.5em;
-}
-
-element normal.normal {
-    background-color:            inherit;
-    text-color:                  @foreground;
-}
-
-element normal.urgent {
-    background-color:            inherit;
-    text-color:                  @foreground;
-}
-
-element normal.active {
-    background-color:            inherit;
-    text-color:                  @foreground;
-}
-
-element selected.urgent {
-    background-color:            inherit;
-    text-color:                  @foreground;
-}
-
-element selected.active {
-    background-color:            inherit;
-    text-color:                  @foreground;
-}
-
-element alternate.normal {
-    background-color:            inherit;
-    text-color:                  @foreground;
-}
-
-element alternate.urgent {
-    background-color:            inherit;
-    text-color:                  @foreground;
-}
-
-element alternate.active {
-    background-color:            inherit;
-    text-color:                  @foreground;
-}
-
-element-icon {
-    size:                        3em;
-    cursor:                      inherit;
-    background-color:            transparent;
-    text-color:                  inherit;
-    border-radius:               0em;
-}
-
-element-text {
-    vertical-align:              0.5;
-    horizontal-align:            0.1;
-    cursor:                      inherit;
-    background-color:            transparent;
-    text-color:                  inherit;
-}
-
-// Error message //
 error-message {
-    text-color:                  @foreground;
-    background-color:            @background;
+    text-color:                  @fg;
+    background-color:            transparent;
     text-transform:              capitalize;
     children:                    [ "textbox" ];
 }
 
 textbox {
     text-color:                  inherit;
-    background-color:            inherit;
+    background-color:            transparent;
     vertical-align:              0.5;
     horizontal-align:            0.5;
+    padding:                     0.5em;
 }

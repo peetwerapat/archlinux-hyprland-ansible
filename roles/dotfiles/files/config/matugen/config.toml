@@ -1,5 +1,11 @@
 [config]
 
+# Accent stays blue whatever the wallpaper is; blend harmonises
+# it toward the wallpaper hue so it never clashes.
+[config.custom_colors.accent]
+color = "#4285f4"
+blend = true
+
 [templates.hyprland]
 input_path = '~/.config/matugen/templates/hyprland-colors.conf'
 output_path = '~/.config/hypr/colors.conf'
@@ -45,7 +51,6 @@ output_path = '~/.config/nwg-dock-hyprland/colors.css'
 input_path = '~/.config/matugen/templates/sequences'
 output_path = '~/.cache/wal/sequences'
 
-[templates.ohmyposh]
-input_path = '~/.config/matugen/templates/ohmyposh-colors.json'
-output_path = '~/.config/ohmyposh/colors.json'
-post_hook = "jq --slurpfile palette ~/.config/ohmyposh/colors.json '. + $palette[0]' ~/.config/ohmyposh/EDM115-newline.omp.json > /tmp/new_theme.json && mv /tmp/new_theme.json ~/.config/ohmyposh/EDM115-newline.omp.json"
+[templates.qt6ct]
+input_path = '~/.config/matugen/templates/qt6ct-colors.conf'
+output_path = '~/.config/qt6ct/colors/matugen.conf'
