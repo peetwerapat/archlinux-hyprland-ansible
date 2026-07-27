@@ -5,24 +5,20 @@
 # -----------------------------------------------------
 set -uo pipefail
 
-ROFI_CFG="$HOME/.config/rofi/config-dropdown.rasi"
+source "$HOME/.config/hypr/scripts/lib-dropdown.sh"
 
 rofi_menu() {
-    rofi -dmenu -i -config "$ROFI_CFG" -location 3 -xoffset -14 -yoffset 56 -p "" \
-        -theme-str 'entry { placeholder: "Search networks"; }' "$@"
+    dropdown_menu "$1" -theme-str 'entry { placeholder: "Search networks"; }' "${@:2}"
 }
 
 # clicking the module again closes the panel
-if pgrep -x rofi >/dev/null; then
-    pkill -x rofi
-    exit 0
-fi
+dropdown_toggle_guard
 
 radio=$(nmcli -t radio wifi)
 active=$(nmcli -t -f NAME,TYPE connection show --active | awk -F: '$2 ~ /wireless/ {print $1; exit}')
 
 if [ "$radio" != "enabled" ]; then
-    choice=$(printf '󰖩   Turn Wi-Fi on\n󰒓   Network settings' | rofi_menu -no-custom -mesg "󰖪   Wi-Fi is off")
+    choice=$(printf '󰖩   Turn Wi-Fi on\n󰒓   Network settings' | rofi_menu "󰖪   Wi-Fi is off" -no-custom)
     case "$choice" in
     *"Turn Wi-Fi on"*) nmcli radio wifi on ;;
     *"Network settings"*) nm-connection-editor & ;;
@@ -56,7 +52,9 @@ else
     mesg="󰖪   Not connected"
 fi
 
-choice=$(echo -e "$entries" | rofi_menu -no-custom -mesg "$mesg")
+dropdown_watch
+choice=$(echo -e "$entries" | rofi_menu "$mesg" -no-custom)
+dropdown_stop_watch
 [ -z "$choice" ] && exit 0
 
 case "$choice" in
@@ -78,8 +76,8 @@ case "$choice" in
             notify-send "Wi-Fi" "Connected to $ssid" ||
             notify-send -u critical "Wi-Fi" "Could not connect to $ssid"
     else
-        pass=$(rofi -dmenu -password -config "$ROFI_CFG" -location 3 -xoffset -14 -yoffset 56 \
-            -p "" -theme-str 'entry { placeholder: "Password for '"$ssid"'"; }' -lines 0)
+        pass=$(printf '' | dropdown_menu "󰌾   $ssid" -password -lines 0 \
+            -theme-str 'entry { placeholder: "Password"; }')
         if [ -n "$pass" ]; then
             nmcli device wifi connect "$ssid" password "$pass" >/dev/null 2>&1 &&
                 notify-send "Wi-Fi" "Connected to $ssid" ||
