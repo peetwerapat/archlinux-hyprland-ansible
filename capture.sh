@@ -26,7 +26,8 @@ mkdir -p "$CFG" "$HOMEF"
 cd "$HOME/.config"
 for d in "${CONFIG_DIRS[@]}"; do
     [ -d "$d" ] || { echo "skip (missing): $d"; continue; }
-    rsync -aL --exclude='.git' --exclude='*.bak' --exclude='htop_history' "$d" "$CFG/"
+    rsync -aL --exclude='.git' --exclude='*.bak' --exclude='htop_history' \
+        --exclude='__pycache__' --exclude='*.pyc' "$d" "$CFG/"
 done
 for f in "${CONFIG_FILES[@]}"; do
     [ -f "$f" ] && cp -aL "$f" "$CFG/"

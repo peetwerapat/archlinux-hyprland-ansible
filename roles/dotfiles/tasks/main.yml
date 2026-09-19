@@ -60,10 +60,12 @@
     - hypr/scripts/cleanup.sh
     - hypr/scripts/cliphist.sh
     - hypr/scripts/gamemode.sh
+    - hypr/scripts/gesture-debug.sh
     - hypr/scripts/gtk.sh
     - hypr/scripts/kb-layout.sh
     - hypr/scripts/keybindings.sh
     - hypr/scripts/loadconfig.sh
+    - hypr/scripts/monitor-mode.sh
     - hypr/scripts/nm-applet.sh
     - hypr/scripts/power.sh
     - hypr/scripts/screenshot.sh
@@ -76,6 +78,7 @@
     - hypr/scripts/xdg.sh
     - waybar/launch.sh
     - waybar/toggle.sh
+    - waybar/scripts/trackpad-battery.py
     - nwg-dock-hyprland/launch.sh
 
 - name: Ensure ~/.vim exists
@@ -94,7 +97,9 @@
 
 - name: Generate the color palette from the wallpaper
   ansible.builtin.command:
-    cmd: "matugen image {{ ansible_env.HOME }}/wallpaper/DesktopBG.jpeg -m dark"
+    cmd: "{{ ansible_env.HOME }}/.cargo/bin/matugen image {{ ansible_env.HOME }}/wallpaper/DesktopBG.jpeg -m dark"
   changed_when: true
+  # Same absolute path hypr/scripts/wallpaper.sh uses — the pinned 2.4.1
+  # cargo build installed by the `matugen` role, not the 4.x repo package.
   # Writes the waybar / rofi / swaync / kitty / gtk / qt6ct / hyprland color
   # files. waypaper re-runs it (post_command) on every wallpaper change.

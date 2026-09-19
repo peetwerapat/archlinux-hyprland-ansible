@@ -179,6 +179,7 @@
             "group/hardware",
             "pulseaudio",
             "network",
+            "custom/trackpad-battery",
             "battery",
             "power-profiles-daemon",
             "custom/language",
@@ -191,5 +192,12 @@
         "format": "{}",
         "tooltip": false,
         "on-click": "hyprctl switchxkblayout at-translated-set-2-keyboard next"
+    },
+    "custom/trackpad-battery": {
+        "exec": "~/.config/waybar/scripts/trackpad-battery.py",
+        "return-type": "json",
+        "interval": 20,
+        "format": "{}",
+        "tooltip": true
     }
 }

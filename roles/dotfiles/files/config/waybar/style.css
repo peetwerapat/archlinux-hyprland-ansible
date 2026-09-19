@@ -137,6 +137,7 @@ window#waybar.empty #window {
 
 #pulseaudio,
 #network,
+#custom-trackpad-battery,
 #battery,
 #custom-language,
 #tray,
@@ -166,6 +167,7 @@ window#waybar.empty #window {
 
 #pulseaudio:hover,
 #network:hover,
+#custom-trackpad-battery:hover,
 #battery:hover,
 #custom-language:hover,
 #custom-system:hover,
@@ -240,6 +242,19 @@ window#waybar.empty #window {
 }
 
 #battery.charging {
+    color: @accent;
+}
+
+#custom-trackpad-battery.warning {
+    color: @tertiary;
+}
+
+#custom-trackpad-battery.critical {
+    background: alpha(@error, 0.18);
+    color: @error;
+}
+
+#custom-trackpad-battery.charging {
     color: @accent;
 }
 

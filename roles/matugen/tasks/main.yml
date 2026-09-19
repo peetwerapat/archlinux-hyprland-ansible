@@ -1,0 +1,24 @@
+---
+# matugen — the tool that turns the wallpaper into the desktop palette.
+#
+# This machine deliberately runs the *cargo* build pinned to 2.4.1, not the
+# `matugen` package in [extra] (4.x). The 4.x config format is incompatible
+# with ~/.config/matugen/config.toml, and hypr/scripts/wallpaper.sh calls
+# $HOME/.cargo/bin/matugen by absolute path.
+#
+# `cargo install` compiles from source — expect a few minutes on first run.
+
+- name: Check for the pinned matugen build
+  ansible.builtin.command: "{{ ansible_env.HOME }}/.cargo/bin/matugen --version"
+  register: matugen_version
+  changed_when: false
+  failed_when: false
+
+- name: Install the pinned matugen build with cargo — {{ matugen_pinned_version }}
+  ansible.builtin.command:
+    cmd: "cargo install matugen --version {{ matugen_pinned_version }} --locked --force"
+  when: matugen_pinned_version not in (matugen_version.stdout | default(''))
+  changed_when: true
+  # No `creates:` on purpose — a wrong version already sitting in
+  # ~/.cargo/bin must be replaced, not skipped.
+  # `rust` (pacman) provides cargo; it is installed by the packages role.

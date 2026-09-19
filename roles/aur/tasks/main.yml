@@ -4,12 +4,12 @@
 
 - name: Check whether yay is already installed
   ansible.builtin.command: which yay
-  register: yay_check
+  register: aur_yay_check
   changed_when: false
   failed_when: false
 
 - name: Bootstrap yay from the AUR
-  when: yay_check.rc != 0
+  when: aur_yay_check.rc != 0
   block:
     - name: Ensure git + base-devel are present (needed to build yay)
       become: true
@@ -29,11 +29,13 @@
       ansible.builtin.command:
         cmd: makepkg -si --noconfirm
         chdir: /tmp/yay-bin
+      changed_when: true
+      # This block only runs when yay is missing, so reaching here always installs it.
       # makepkg internally calls sudo pacman -U; --ask-become-pass supplies the password.
 
 - name: Install AUR packages via yay
   ansible.builtin.command:
     cmd: "yay -S --needed --noconfirm {{ aur_packages | join(' ') }}"
-  register: yay_install
-  changed_when: "'there is nothing to do' not in yay_install.stdout"
+  register: aur_yay_install
+  changed_when: "'there is nothing to do' not in aur_yay_install.stdout"
   when: aur_packages | length > 0
