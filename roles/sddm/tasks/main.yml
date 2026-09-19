@@ -12,29 +12,29 @@
   loop:
     - sddm-sugar-candy
     - sugar-candy
-  register: sugar_candidates
+  register: sddm_sugar_candidates
 
 - name: Remember which directory name it uses
   ansible.builtin.set_fact:
-    sugar_theme: >-
-      {{ (sugar_candidates.results | selectattr('stat.exists') | map(attribute='item') | list | first) | default('', true) }}
+    sddm_sugar_theme: >-
+      {{ (sddm_sugar_candidates.results | selectattr('stat.exists') | map(attribute='item') | list | first) | default('', true) }}
 
 - name: Warn when Sugar Candy is missing
   ansible.builtin.debug:
     msg: >-
       Sugar Candy is not installed (expected /usr/share/sddm/themes/sddm-sugar-candy).
       Install the AUR package sddm-sugar-candy-git and re-run with --tags sddm.
-  when: sugar_theme | length == 0
+  when: sddm_sugar_theme | length == 0
 
 - name: Deploy the blue-glass color override
   become: true
   ansible.builtin.copy:
     src: sugar-candy-theme.conf.user
-    dest: "/usr/share/sddm/themes/{{ sugar_theme }}/theme.conf.user"
+    dest: "/usr/share/sddm/themes/{{ sddm_sugar_theme }}/theme.conf.user"
     owner: root
     group: root
     mode: "0644"
-  when: sugar_theme | length > 0
+  when: sddm_sugar_theme | length > 0
 
 - name: Ensure /etc/sddm.conf.d exists
   become: true
@@ -54,6 +54,6 @@
       # Loaded after sddm.conf (files are read in alphabetical order),
       # so this wins over any Current= set there.
       [Theme]
-      Current={{ sugar_theme }}
+      Current={{ sddm_sugar_theme }}
       CursorTheme=Bibata-Modern-Ice
-  when: sugar_theme | length > 0
+  when: sddm_sugar_theme | length > 0

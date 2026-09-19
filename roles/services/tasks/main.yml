@@ -8,10 +8,10 @@
     enabled: true
     state: started
   loop: "{{ system_services + system_services_optional }}"
-  register: svc_result
+  register: services_svc_result
   failed_when:
-    - svc_result is failed
-    - "'Could not find the requested service' not in (svc_result.msg | default(''))"
+    - services_svc_result is failed
+    - "'Could not find the requested service' not in (services_svc_result.msg | default(''))"
 
 - name: Enable user services (systemd --user)
   ansible.builtin.systemd:
@@ -19,7 +19,7 @@
     enabled: true
     scope: user
   loop: "{{ user_services }}"
-  register: usvc_result
+  register: services_usvc_result
   failed_when:
-    - usvc_result is failed
-    - "'Could not find the requested service' not in (usvc_result.msg | default(''))"
+    - services_usvc_result is failed
+    - "'Could not find the requested service' not in (services_usvc_result.msg | default(''))"
