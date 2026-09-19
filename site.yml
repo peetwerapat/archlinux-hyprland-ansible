@@ -21,8 +21,9 @@
 
   roles:
     - { role: packages, tags: [packages] }
-    - { role: aur,      tags: [aur] }
+    - { role: aur, tags: [aur] }
     - { role: services, tags: [services] }
-    - { role: user,     tags: [user] }
+    - { role: user, tags: [user] }
+    - { role: matugen, tags: [matugen, dotfiles] }
     - { role: dotfiles, tags: [dotfiles] }
-    - { role: sddm,     tags: [sddm] }
+    - { role: sddm, tags: [sddm] }

@@ -15,8 +15,13 @@ target_user: "{{ ansible_user_id }}"
 # it used to pull in as a dependency is listed here explicitly:
 #   kitty, hyprlock, hypridle, hyprpaper, xdg-desktop-portal-hyprland,
 #   qt5-wayland, qt6-wayland, libnotify, bluez-utils, vim, man-pages, zip
-# matugen generates the color palette; adwaita-fonts is the UI font;
-# nmap provides ncat, used by the keyboard-layout script.
+# adwaita-fonts is the UI font; nmap provides ncat, used by the
+# keyboard-layout script; dkms builds the evdi module for the
+# DisplayLink dock.
+#
+# matugen is NOT here: the desktop uses the cargo build pinned to 2.4.1
+# (~/.cargo/bin/matugen), see the `matugen` role. The repo package is 4.x
+# and its config format is not the one in ~/.config/matugen/config.toml.
 pacman_packages:
   - adwaita-fonts
   - arp-scan
@@ -29,6 +34,7 @@ pacman_packages:
   - btrfs-progs
   - clang
   - cliphist
+  - dkms
   - dmenu
   - docker
   - docker-compose
@@ -85,7 +91,6 @@ pacman_packages:
   - loupe
   - lua-language-server
   - man-pages
-  - matugen
   - maven
   - mpv
   - nautilus
@@ -103,6 +108,7 @@ pacman_packages:
   - nwg-dock-hyprland
   - nwg-look
   - ollama
+  - openai-codex
   - otf-font-awesome
   - papirus-icon-theme
   - pavucontrol
@@ -155,6 +161,9 @@ pacman_packages:
   - zsh-completions
 
 # ---- AUR packages (installed via yay) ---------------------------
+# displaylink + evdi-dkms drive the Dell D6000 dock (needs dkms + linux-headers);
+# magic-trackpad-battery-git adds the Bluetooth Magic Trackpad battery daemon
+# read by waybar/scripts/trackpad-battery.py.
 aur_packages:
   - bambustudio-bin
   - beekeeper-studio-bin
@@ -162,13 +171,16 @@ aur_packages:
   - brave-bin
   - checkupdates-with-aur
   - clickup-desktop
+  - displaylink
   - downgrade
+  - evdi-dkms
   - figma-linux
   - google-chrome
   - grimblast-git
   - hyprshade
   - jdtls
   - lazysql
+  - magic-trackpad-battery-git
   - nautilus-open-any-terminal
   - ngrok
   - notion-app-electron
@@ -190,6 +202,7 @@ aur_packages:
 # (e.g. trackpoint-fix) are intentionally left out.
 system_services:
   - bluetooth.service
+  - displaylink.service     # Dell D6000 dock (DisplayLink/evdi)
   - docker.service
   - NetworkManager.service
   - sddm.service
@@ -211,6 +224,10 @@ user_services:
   - pipewire-pulse.socket
   - wireplumber.service
   - gnome-keyring-daemon.socket
+  # Magic Trackpad: battery daemon + Bluetooth reconnect timer.
+  # Harmless without the hardware — the units just idle.
+  - magic-trackpad-battery.service
+  - magic-trackpad-autoconnect.timer
 
 # ---- Extra groups the user should belong to --------------------
 user_groups:
