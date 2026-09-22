@@ -23,10 +23,9 @@ echo "$wallpaper" >"$CACHE_FILE"
 echo ":: Wallpaper: $wallpaper"
 
 # ---- apply it (hyprpaper) ----
-pgrep -x hyprpaper >/dev/null || { hyprpaper >/dev/null 2>&1 & sleep 0.5; }
-hyprctl hyprpaper preload "$wallpaper" >/dev/null
-hyprctl hyprpaper wallpaper ",$wallpaper" >/dev/null
-hyprctl hyprpaper unload unused >/dev/null 2>&1
+# hyprpaper >= 0.8 dropped `preload`/`unload`; `wallpaper` loads on demand.
+. "$(dirname "$0")/lib-wallpaper.sh"
+apply_wallpaper "$wallpaper" || echo ":: hyprpaper did not accept the wallpaper" >&2
 
 # ---- blurred copy (used as the wlogout background) ----
 if command -v magick >/dev/null 2>&1; then

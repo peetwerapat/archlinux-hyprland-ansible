@@ -74,6 +74,33 @@ button:hover {
     padding: 6px;
 }
 
+/* The flowbox cell is larger than the button it holds, so its own hover and
+ * focus highlight peeked out around the button and read as an outer glow. */
+.widget-buttons-grid > flowbox > flowboxchild,
+.widget-buttons-grid > flowbox > flowboxchild:hover,
+.widget-buttons-grid > flowbox > flowboxchild:focus,
+.widget-buttons-grid > flowbox > flowboxchild:focus-visible,
+.widget-buttons-grid > flowbox > flowboxchild:selected,
+.widget-buttons-grid > flowbox > flowboxchild:active {
+    background: transparent;
+    box-shadow: none;
+    outline: none;
+}
+
+/* Toggle buttons (the trackpad one) are GtkToggleButtons, so the "on" state is
+ * `:checked`; swaync's docs call it `.active`, so match both. */
+.widget-buttons-grid > flowbox > flowboxchild > button:checked,
+.widget-buttons-grid > flowbox > flowboxchild > button.active {
+    background: alpha(@accent, 0.20);
+    border-color: alpha(@accent, 0.45);
+    color: @accent;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button:checked:hover,
+.widget-buttons-grid > flowbox > flowboxchild > button.active:hover {
+    background: alpha(@accent, 0.28);
+}
+
 /* ---------- Widgets ---------- */
 
 .widget-dnd {
@@ -102,20 +129,24 @@ button:hover {
     color: @on_surface;
 }
 
-trough {
+/* Scoped to `scale` on purpose: bare `trough`/`slider` selectors also match
+ * the scrollbar and the dnd switch, which turned the scrollbar into a giant
+ * accent-colored lens. */
+
+scale trough {
     background: alpha(@on_surface, 0.12);
     border: none;
     border-radius: 3px;
     min-height: 6px;
 }
 
-highlight {
+scale highlight {
     background: @accent;
     border-radius: 3px;
     min-height: 6px;
 }
 
-slider {
+scale slider {
     background: @accent;
     border: 2px solid alpha(@surface, 0.9);
     border-radius: 50%;
@@ -124,11 +155,104 @@ slider {
     margin: -4px;
 }
 
+switch slider {
+    background: @on_surface;
+    border: none;
+    border-radius: 50%;
+    min-width: 16px;
+    min-height: 16px;
+    margin: 2px;
+}
+
+switch:checked slider {
+    background: @on_accent;
+}
+
+/* ---------- Scrollbar ---------- */
+
+/* swaync nests two scrolled windows: the whole control center is one, and the
+ * notification list inside `.widget-notifications` is another. With
+ * `control-center-height: -1` in config.json the outer one is sized to its
+ * content and can never scroll, so its scrollbar is hidden as well. */
+
+.control-center > scrollbar {
+    min-width: 0;
+    min-height: 0;
+    opacity: 0;
+}
+
+/* With `control-center-height: -1` the outer window is exactly as tall as its
+ * content, so it has nothing to scroll. That makes this min-height the height
+ * of the notification list: the widgets above it are fixed, and only this box
+ * scrolls once there are more cards than fit. */
+.widget-notifications scrolledwindow {
+    min-height: 260px;
+}
+
+/* GTK hides the overlay scrollbar entirely while the list is idle, so this
+ * only styles it for while you scroll or hover it. `opacity: 1` keeps it from
+ * being drawn half-faded in that state. */
+.widget-notifications scrollbar,
+.widget-notifications scrollbar.overlay-indicator {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    opacity: 1;
+}
+
+.widget-notifications scrollbar trough {
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    margin: 2px 2px 2px 0;
+    min-width: 8px;
+}
+
+.widget-notifications scrollbar slider {
+    background: alpha(@on_surface, 0.18);
+    border: none;
+    border-radius: 8px;
+    margin: 0;
+    min-width: 6px;
+    min-height: 40px;
+    transition: background 0.15s ease-in-out;
+}
+
+.widget-notifications scrollbar slider:hover {
+    background: alpha(@on_surface, 0.32);
+}
+
+.widget-notifications scrollbar slider:active {
+    background: alpha(@accent, 0.75);
+}
+
+/* No fade-in/fade-out shadow at the ends of the list */
+undershoot,
+overshoot {
+    background: none;
+}
+
 /* ---------- Notifications ---------- */
 
 .notification-row {
     background: transparent;
     outline: none;
+}
+
+/* Everything around the card stays flat: swaync's defaults paint a focus
+ * background on the row and on the action button, and libadwaita adds a
+ * square focus ring, so a focused card ended up wearing three frames. */
+.notification-row:focus,
+.notification-row:hover,
+.notification-row:focus-within {
+    background: transparent;
+    outline: none;
+    box-shadow: none;
+}
+
+.notification-row .notification-background {
+    padding: 3px 0;
 }
 
 .notification-group-header {
@@ -140,17 +264,17 @@ slider {
 .notification {
     background: transparent;
     border: none;
-    border-radius: 6px;
-    margin: 4px 0;
+    border-radius: 10px;
+    margin: 0;
     padding: 0;
+    box-shadow: none;
 }
 
 .notification-content {
     background: alpha(@surface_container, 0.92);
-    border: 1px solid alpha(@on_surface, 0.08);
-    border-left: 3px solid @accent;
-    border-radius: 14px;
-    padding: 12px;
+    border: 1px solid alpha(@on_surface, 0.07);
+    border-radius: 10px;
+    padding: 10px 12px;
     color: @on_surface;
 }
 
@@ -182,23 +306,44 @@ slider {
     color: @on_surface;
 }
 
+/* The action button wraps the card, so it must not add padding of its own —
+ * any band it leaves shows up as a second frame when it takes focus. */
 .notification-default-action,
 .notification-action {
     background: transparent;
     border: none;
+    padding: 0;
     color: @on_surface;
+    outline: none;
 }
 
 .notification-default-action:hover,
-.notification-action:hover {
-    background: @surface_container_high;
-    color: @on_surface;
+.notification-default-action:focus,
+.notification-default-action:active {
+    background: transparent;
+    outline: none;
+    box-shadow: none;
+}
+
+.notification-content:hover {
+    background: alpha(@surface_container_high, 0.96);
+}
+
+/* Keyboard focus, drawn on the card itself instead of as a ring around it */
+.notification-default-action:focus .notification-content {
+    border-color: alpha(@accent, 0.55);
 }
 
 .notification-action {
     border: 1px solid @outline_variant;
-    border-radius: 4px;
+    border-radius: 8px;
     margin: 4px 2px 0 2px;
+    padding: 4px 8px;
+}
+
+.notification-action:hover {
+    background: @surface_container_high;
+    color: @on_surface;
 }
 
 /* ---------- Floating notifications ---------- */

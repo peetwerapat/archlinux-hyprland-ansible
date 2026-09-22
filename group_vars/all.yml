@@ -91,6 +91,7 @@ pacman_packages:
   - loupe
   - lua-language-server
   - man-pages
+  - mariadb-clients        # mysql/mariadb CLI for lazysql + dbeaver
   - maven
   - mpv
   - nautilus

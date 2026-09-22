@@ -2,7 +2,7 @@
 
 This playbook rebuilds **this** workstation on a fresh Arch Linux install:
 packages (pacman + AUR), enabled services, user groups, default shell, the
-dotfiles and the login screen. Snapshot refreshed on 2026-09-19.
+dotfiles and the login screen. Snapshot refreshed on 2026-09-22.
 
 ## What it does
 
@@ -39,11 +39,27 @@ Hyprland with a blue-glass theme that follows the wallpaper:
   ssh tabs follow the remote path. Background is solid `#000000` so the padding
   around nvim is not a gray frame.
 - **hyprlock / wlogout / swaync / nwg-dock** — same palette and radius scale.
+- **swaync** — the control center grows with its content
+  (`control-center-height: -1`) and the button grid is five per row: DND,
+  screenshot, colour picker, Bluetooth, **Magic Trackpad connect/disconnect**
+  and logout. The trackpad button is a real toggle backed by
+  `hypr/scripts/trackpad-toggle.sh` (`bluetoothctl connect/disconnect`, with
+  `status` feeding swaync's `update-command`), so its `:checked` state shows
+  whether the trackpad is on Bluetooth right now.
 - UI font: **Adwaita Sans**; terminal font: JetBrainsMono Nerd Font.
 
 Wallpaper changes go through `waypaper`, whose `post_command` runs
 `~/.config/hypr/scripts/wallpaper.sh` — that sets the wallpaper, refreshes the
 blurred copy used by hyprlock/wlogout, re-runs matugen and reloads waybar.
+
+**hyprpaper 0.8** changed both its config file and its IPC: `preload =` /
+`wallpaper = ,path` one-liners are gone (the config now needs a `wallpaper { }`
+block) and only `wallpaper` and `listactive` survive over `hyprctl hyprpaper` —
+`preload`/`unload` answer *invalid hyprpaper request*. With the old syntax the
+desktop simply came up with no wallpaper. `hypr/scripts/lib-wallpaper.sh` holds
+the shared helper both `wallpaper.sh` and `wallpaper-restore.sh` now source: it
+starts hyprpaper if needed, waits for the IPC, and re-sends the wallpaper until
+`listactive` confirms it (outputs can show up a moment after the socket).
 
 ### Monitors — Dell D6000 dock (DisplayLink)
 
@@ -90,13 +106,25 @@ Battery comes from `magic-trackpad-battery-git` (AUR): a user daemon writes
 `waybar/scripts/trackpad-battery.py` renders it — hiding the module whenever
 the trackpad is not on Bluetooth.
 
+Connecting and disconnecting it is the toggle in the swaync control center
+(see above). `hypr/scripts/trackpad-toggle.sh` has the MAC address hard-coded
+— **change `MAC=` there for your own trackpad**, it is the one thing in this
+repo tied to a specific piece of hardware.
+
 ### Neovim
 
 `nvim/lua/peetwerapat/core/ai.lua` replaced the old `ollama.lua`: one chat
-window over several providers — local Ollama (`qwen2.5-coder` 7b/14b),
-`claude` and `codex` CLIs, and `qwen3-coder-next:cloud`. Model and limits are
+window over several providers, on `<leader>ac1..ac6` (`:AIChat1..6`) —
+local Ollama ask/code (`qwen2.5-coder` 7b/14b), the `claude`, `codex` and
+`gemini` CLIs, and `qwen3-coder-next:cloud`. Model and limits are
 overridable with `OLLAMA_HOST`, `OLLAMA_MODEL_ASK`, `OLLAMA_MODEL_CODE`,
-`AI_MAX_FILES`, `AI_MAX_FILE_CHARS`, `AI_MAX_TOTAL_CHARS`.
+`AI_MAX_FILES`, `AI_MAX_FILE_CHARS`, `AI_MAX_TOTAL_CHARS`. In the chat buffer
+`<Esc>` leaves terminal mode instead of reaching the CLI — passing it through
+interrupted the answer being generated.
+
+`nvim-tree` runs with filesystem watchers on, but with the usual build and
+dependency folders (`node_modules`, `.next`, `target`, `dist`, `.venv`, …) in
+`ignore_dirs` — watching those burns inotify handles on big repos.
 
 ## Prerequisites on the NEW machine
 
@@ -184,3 +212,11 @@ Everything you'd tweak is in [`group_vars/all.yml`](group_vars/all.yml):
 ```bash
 bash capture.sh      # refreshes roles/dotfiles/files from this machine
 ```
+
+`capture.sh` dereferences symlinks, so on this machine `~/.config/swaync`
+(a link into `~/.config/hypr/swaync`) would be captured twice; the script
+deletes the copy under `config/hypr/` and keeps `config/swaync/`, which is
+also the path matugen writes `colors.css` to. Any new script under
+`hypr/scripts/` that has to stay executable needs a line in the
+`Make the hypr and waybar scripts executable` task of the `dotfiles` role —
+`synchronize` preserves modes, but that loop is what the role guarantees.

@@ -38,6 +38,12 @@ for f in "${HOME_FILES[@]}"; do
     [ -f "$f" ] && cp -aL "$f" "$HOMEF/"
 done
 
+# ~/.config/swaync is a symlink into ~/.config/hypr/swaync, and rsync -aL
+# dereferences it — without this the same three files land in the snapshot
+# twice and drift apart. Keep the canonical copy under config/swaync/,
+# which is also where matugen writes colors.css.
+rm -rf "$CFG/hypr/swaync"
+
 # login screen colour override
 if [ -f "$HOME/.local/share/sddm-themes/sugar-candy-theme.conf.user" ]; then
     cp -a "$HOME/.local/share/sddm-themes/sugar-candy-theme.conf.user" \

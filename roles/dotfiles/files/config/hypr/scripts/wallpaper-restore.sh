@@ -12,6 +12,5 @@ wallpaper="$(cat "$CACHE_FILE" 2>/dev/null)"
 [ -f "$wallpaper" ] || wallpaper="$DEFAULT"
 
 echo ":: Restoring wallpaper $wallpaper"
-pgrep -x hyprpaper >/dev/null || { hyprpaper >/dev/null 2>&1 & sleep 0.5; }
-hyprctl hyprpaper preload "$wallpaper" >/dev/null
-hyprctl hyprpaper wallpaper ",$wallpaper" >/dev/null
+. "$(dirname "$0")/lib-wallpaper.sh"
+apply_wallpaper "$wallpaper"

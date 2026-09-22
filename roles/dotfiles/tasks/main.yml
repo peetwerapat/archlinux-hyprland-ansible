@@ -70,6 +70,7 @@
     - hypr/scripts/power.sh
     - hypr/scripts/screenshot.sh
     - hypr/scripts/toggle-animations.sh
+    - hypr/scripts/trackpad-toggle.sh
     - hypr/scripts/volume-menu.sh
     - hypr/scripts/wallpaper.sh
     - hypr/scripts/wallpaper-restore.sh
